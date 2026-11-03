@@ -1,0 +1,49 @@
+---
+title: "Billboard Graphic"
+execute:
+  echo: false
+---
+
+```{r}
+#| message: false
+library(tidyverse)
+```
+
+```{r}
+billboard_long <- tidyr::billboard |>
+  pivot_longer(
+    cols = starts_with("wk"),
+    names_to = "week",
+    names_prefix = "wk",
+    names_transform = list(week = as.integer),
+    values_to = "rank"
+  ) |>
+  filter(!is.na(rank))
+
+top_tracks <- billboard_long |>
+  count(track, sort = TRUE) |>
+  slice_head(n = 12) |>
+  pull(track)
+
+billboard_long |>
+  filter(track %in% top_tracks) |>
+  mutate(track = factor(track, levels = top_tracks)) |>
+  ggplot(aes(x = week, y = rank, color = track, group = track)) +
+  geom_line(linewidth = 0.9, alpha = 0.9) +
+  facet_wrap(vars(track), ncol = 3) +
+  scale_y_reverse(breaks = c(1, 10, 20, 40, 60, 80, 100)) +
+  scale_color_viridis_d(option = "turbo", guide = "none") +
+  labs(
+    title = "The Longest-Running Billboard Hits",
+    subtitle = "Weekly chart rank for the 12 longest-running songs",
+    x = "Week on the chart",
+    y = "Billboard rank"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 18),
+    panel.grid.minor = element_blank(),
+    strip.text = element_text(face = "bold", size = 9),
+    panel.spacing = unit(1, "lines")
+  )
+```
