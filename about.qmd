@@ -2,4 +2,7 @@
 title: "About"
 ---
 
-About this site
+## About Me
+My name is **Angel Legrand** and I go to *New College of Florida*
+
+[Kane’s Free Data Science Bootcamp](https://bootcamp.davidkane.info)
